@@ -99,6 +99,14 @@ struct Cli {
         help = t!("cli.api_host").to_string()
     )]
     api_host: Option<url::Url>,
+
+    #[cfg(feature = "embed")]
+    #[arg(
+        long,
+        default_value = "0.0.0.0",
+        help = t!("cli.web_listen_addr").to_string(),
+    )]
+    web_listen_addr: String,
 }
 
 impl LoggingConfigLoader for &Cli {
@@ -209,11 +217,14 @@ async fn main() {
 
     #[cfg(feature = "embed")]
     let _web_server_task = if let Some(web_router) = web_router_static {
+        let web_addr = if cli.web_listen_addr.contains(':') && !cli.web_listen_addr.starts_with('[') {
+            format!("[{}]:{}", cli.web_listen_addr, cli.web_server_port.unwrap_or(0))
+        } else {
+            format!("{}:{}", cli.web_listen_addr, cli.web_server_port.unwrap_or(0))
+        };
         Some(
             web::WebServer::new(
-                format!("0.0.0.0:{}", cli.web_server_port.unwrap_or(0))
-                    .parse()
-                    .unwrap(),
+                web_addr.parse().unwrap(),
                 web_router,
             )
             .await
