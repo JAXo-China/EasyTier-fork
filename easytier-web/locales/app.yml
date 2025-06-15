@@ -31,3 +31,6 @@ cli:
   api_host:
     en: "The URL of the API server, used by the web frontend to connect to"
     zh-CN: "API 服务器的 URL，用于 web 前端连接"
+  web_listen_addr:
+    en: "Listen address for web server (supports IPv4, IPv6, e.g., 0.0.0.0, 127.0.0.1, ::1)"
+    zh-CN: "web 服务器的监听地址（支持 IPv4, IPv6，例如：0.0.0.0, 127.0.0.1, ::1）"
